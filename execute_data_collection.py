@@ -5,7 +5,7 @@ import google.generativeai as genai
 # Configure the Gemini API
 yaml_file_path = "demo_formular.yaml"
 output_file_path = "output.yaml"
-GEMINI_API_KEY = "AIzaSyCcKo3GwiZ9qeaP1G0A6BRVhFGgnSFLDZQ"
+GEMINI_API_KEY = ""
 genai.configure(api_key=GEMINI_API_KEY)
 
 
