@@ -1,0 +1,73 @@
+patient_information:
+  personal_details:
+    first_name: 
+    last_name: 
+    date_of_birth: 
+    gender: 
+    marital_status: 
+  contact_information:
+    address:
+      street: 
+      city: 
+      state: 
+      zip_code: 
+    phone:
+      home: 
+      mobile: 
+      work: 
+    email: 
+  emergency_contact:
+    name: 
+    relationship: 
+    phone: 
+
+medical_history:
+  allergies:
+    - allergen: 
+      reaction: 
+  surgeries:
+    - procedure: 
+      year: 
+
+lifestyle_information:
+  smoking_status: 
+  alcohol_consumption: 
+  exercise_frequency: 
+  occupation: 
+
+insurance_information:
+  primary_insurance:
+    provider_name: 
+    policy_number: 
+    group_number: 
+    policyholder_name: 
+  secondary_insurance:
+    provider_name: 
+    policy_number: 
+    group_number: 
+    policyholder_name: 
+
+current_health_status:
+  chief_complaint: 
+  symptoms:
+    - symptom: 
+      duration: 
+  pain_scale: 
+  current_medications:
+    - name: 
+      dosage: 
+      frequency: 
+
+consent_and_authorization:
+  privacy_policy_acknowledgment: 
+  treatment_consent: 
+  information_release_authorization: 
+
+physician_information:
+  primary_care_physician:
+    name: 
+    phone: 
+  referring_physician:
+    name: 
+    phone: 
+

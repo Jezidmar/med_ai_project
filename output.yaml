@@ -1,0 +1,62 @@
+consent_and_authorization:
+  information_release_authorization: null
+  privacy_policy_acknowledgment: null
+  treatment_consent: null
+current_health_status:
+  chief_complaint: null
+  current_medications:
+  - dosage: null
+    frequency: null
+    name: null
+  pain_scale: null
+  symptoms:
+  - duration: null
+    symptom: null
+insurance_information:
+  primary_insurance:
+    group_number: null
+    policy_number: null
+    policyholder_name: null
+    provider_name: null
+  secondary_insurance:
+    group_number: null
+    policy_number: null
+    policyholder_name: null
+    provider_name: null
+lifestyle_information:
+  alcohol_consumption: null
+  exercise_frequency: null
+  occupation: null
+  smoking_status: null
+medical_history:
+  allergies:
+  - allergen: null
+    reaction: null
+  surgeries:
+  - procedure: null
+    year: null
+patient_information:
+  contact_information:
+    address: null
+    email: null
+    phone:
+      home: null
+      mobile: null
+      work: null
+  emergency_contact:
+    name: null
+    phone: null
+    relationship: null
+  personal_details:
+    date_of_birth: null
+    first_name: null
+    gender: null
+    last_name: null
+    marital_status: null
+physician_information:
+  primary_care_physician:
+    name: null
+    phone: null
+  referring_physician:
+    name: null
+    phone: null

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Medical Form</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        button {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        fieldset {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Patient Information Form</h1>
+
+    <!-- Button to trigger decoding -->
+    <button id="decodeButton">Run Decoding</button>
+    <div id="message"></div>
+
+    <form method="post">
+        {% macro render_field(name, value, prefix='') %}
+        {% if value is mapping %}
+        <fieldset>
+            <legend>{{ name.replace('_', ' ').title() }}</legend>
+            {% for field, field_value in value.items() %}
+            {{ render_field(field, field_value, prefix + name + '.') }}
+            {% endfor %}
+        </fieldset>
+        {% elif value is iterable and value is not string %}
+        <fieldset>
+            <legend>{{ name.replace('_', ' ').title() }}</legend>
+            {% set items = value if value else [{}] %}
+            {% if items[0] is mapping %}
+            {% for item in items %}
+            <div>
+                {% for subfield, subvalue in item.items() %}
+                <label>{{ subfield.replace('_', ' ').title() }}:</label>
+                <input type="text" name="{{ prefix }}{{ name }}[][{{ subfield }}]" value="{{ subvalue or '' }}">
+                {% endfor %}
+            </div>
+            {% endfor %}
+            {% else %}
+            {% for item in items %}
+            <div>
+                <input type="text" name="{{ prefix }}{{ name }}[]" value="{{ item or '' }}">
+            </div>
+            {% endfor %}
+            {% endif %}
+            <button type="button" class="add-field-btn" data-field-name="{{ prefix }}{{ name }}">Add {{
+                name.replace('_', ' ').title() }}</button>
+        </fieldset>
+        {% else %}
+        <label>{{ name.replace('_', ' ').title() }}:</label>
+        <input type="text" name="{{ prefix }}{{ name }}" value="{{ value or '' }}"><br>
+        {% endif %}
+        {% endmacro %}
+
+        {% for section, content in data.items() %}
+        <h2>{{ section.replace('_', ' ').title() }}</h2>
+        {{ render_field(section, content) }}
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        function addField(fieldName) {
+            // Find the correct fieldset using the fieldName
+            const fieldsets = document.querySelectorAll('fieldset');
+            let targetFieldset = null;
+
+            fieldsets.forEach(fieldset => {
+                const legend = fieldset.querySelector('legend').textContent.toLowerCase();
+                if (legend === fieldName.split('.').pop().replace('_', ' ').toLowerCase()) {
+                    targetFieldset = fieldset;
+                }
+            });
+
+            if (targetFieldset) {
+                // Clone the last input group (div) and clear input values
+                const lastDiv = targetFieldset.querySelector('div:last-of-type');
+                if (lastDiv) {
+                    const newDiv = lastDiv.cloneNode(true);
+                    newDiv.querySelectorAll('input').forEach(input => input.value = '');
+                    targetFieldset.insertBefore(newDiv, targetFieldset.querySelector('button'));
+                } else {
+                    // Create new inputs if none exist
+                    const newDiv = document.createElement('div');
+                    // Determine subfields based on the fieldName
+                    const subfields = getSubfieldsForFieldName(fieldName);
+                    subfields.forEach(subfield => {
+                        const label = document.createElement('label');
+                        label.textContent = subfield.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) + ':';
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.name = `${fieldName}[][${subfield}]`;
+                        newDiv.appendChild(label);
+                        newDiv.appendChild(input);
+                    });
+                    targetFieldset.insertBefore(newDiv, targetFieldset.querySelector('button'));
+                }
+            } else {
+                console.error("Fieldset not found for: " + fieldName);
+            }
+        }
+
+        // Function to determine subfields based on the field name
+        function getSubfieldsForFieldName(fieldName) {
+            // Map field names to their subfields
+            const subfieldsMap = {
+                'medical_history.allergies': ['allergen', 'reaction'],
+                'medical_history.current_medications': ['name', 'dosage', 'frequency'],
+                'medical_history.family_medical_history': ['condition', 'relation'],
+                'medical_history.past_medical_conditions': ['condition', 'year_diagnosed'],
+                'medical_history.surgeries': ['procedure', 'year'],
+                'current_health_status.current_medications': ['name', 'dosage', 'frequency'],
+                'current_health_status.symptoms': ['symptom', 'duration'],
+                // Add other field names and their subfields as needed
+            };
+
+            return subfieldsMap[fieldName] || [];
+        }
+
+        // Event delegation for adding dynamic fields
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('add-field-btn')) {
+                const fieldName = event.target.getAttribute('data-field-name');
+                addField(fieldName);
+            }
+        });
+
+        // AJAX to trigger decoding when the button is clicked
+        $('#decodeButton').click(function () {
+            $.post("/run-decoding", function (response) {
+                $('#message').html("<p>Decoding process completed.</p>");
+            }).fail(function () {
+                $('#message').html("<p>Error running decoding.</p>");
+            });
+        });
+    </script>
+</body>
+
+</html>
